@@ -9,7 +9,8 @@ services:
       - "8080:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - Ollama__Endpoint=http://ollama:11434
+      - AzureOpenAI__Endpoint=https://your-resource.openai.azure.com/
+      - AzureOpenAI__Deployment=GenAIGPT
     depends_on:
       - ollama
 
