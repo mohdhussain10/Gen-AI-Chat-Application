@@ -1,0 +1,6 @@
+@GenAIChat_HostAddress = http://localhost:5115
+
+GET {{GenAIChat_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
