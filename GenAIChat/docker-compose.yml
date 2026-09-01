@@ -7,20 +7,10 @@ services:
     container_name: genai-api
     ports:
       - "8080:8080"
+    env_file:
+      - .env
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - AzureOpenAI__Endpoint=https://your-resource.openai.azure.com/
-      - AzureOpenAI__Deployment=GenAIGPT
-    depends_on:
-      - ollama
-
-  ollama:
-    image: ollama/ollama
-    container_name: ollama
-    ports:
-      - "11434:11434"
-    volumes:
-      - ollama-data:/root/.ollama
-
-volumes:
-  ollama-data:
+      - AzureOpenAI__Endpoint=https://genai-chat-v2-resource.services.ai.azure.com
+      - AzureOpenAI__Deployment=gpt-5-mini 
+  

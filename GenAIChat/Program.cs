@@ -1,9 +1,12 @@
-using Azure.AI.OpenAI;
+
 using Azure.Identity;
 using GenAIChat.Interfaces;
 using GenAIChat.Services;
 using Microsoft.Extensions.AI;
 using OllamaSharp;
+using OpenAI;
+using OpenAI.Responses;
+using System.ClientModel.Primitives;
 using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,25 +42,37 @@ builder.Services.AddSwaggerGen();
 
 #endregion
 
+BearerTokenPolicy tokenPolicy = new(
+    new DefaultAzureCredential(),
+    "https://ai.azure.com/.default");
+
+if(tokenPolicy != null)
+{
+    Console.WriteLine("Authentication is successful");
+}
+
 #region Azure Open AI
+
 var endpoint =
     builder.Configuration["AzureOpenAI:Endpoint"]
-    ?? "http://localhost:11434";
+    ?? "Azure OpenAI endpoint is not configured.";
 
-var deployementModelName = builder.Configuration["AzureOpenAI:Deployment"]
-    ?? "GenAIGPT";
+#pragma warning disable 
+var client = new ResponsesClient(
+    tokenPolicy,
+    new ResponsesClientOptions { Endpoint = new Uri($"{endpoint}/openai/v1/") }
+);
 
-IChatClient chatClient =
-    new AzureOpenAIClient(
-        new Uri(endpoint),
-        new DefaultAzureCredential())
-    .GetChatClient(deployementModelName)
-    .AsIChatClient();
+builder.Services.AddSingleton(client);
+#pragma warning disable
+
 
 #endregion
 
 //Registering services
 builder.Services.AddScoped<IChatService, ChatService>();
+
+
 
 var app = builder.Build();
 
