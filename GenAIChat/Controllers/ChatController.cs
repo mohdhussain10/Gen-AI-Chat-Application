@@ -11,7 +11,7 @@ namespace GenAIChat.Controllers
         [HttpPost]
         public async Task<ActionResult<ChatResponse>> Chat(ChatRequest request)
         {
-            var response = await chatService.GetResponseAsync(request.Message);
+            var response = await chatService.GetResponseAsync(request.Message, request.ConversationId);
 
             return Ok(new ChatResponse
             {

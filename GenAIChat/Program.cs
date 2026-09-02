@@ -57,13 +57,20 @@ var endpoint =
     builder.Configuration["AzureOpenAI:Endpoint"]
     ?? "Azure OpenAI endpoint is not configured.";
 
+var deployment = builder.Configuration["AzureOpenAI:Deployment"];
+    
+
+
+
 #pragma warning disable 
 var client = new ResponsesClient(
     tokenPolicy,
     new ResponsesClientOptions { Endpoint = new Uri($"{endpoint}/openai/v1/") }
 );
 
-builder.Services.AddSingleton(client);
+IChatClient chatClient = client.AsIChatClient(deployment);
+
+builder.Services.AddSingleton(chatClient);
 #pragma warning disable
 
 
@@ -71,6 +78,8 @@ builder.Services.AddSingleton(client);
 
 //Registering services
 builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddSingleton<ConversationStore>();
+
 
 
 

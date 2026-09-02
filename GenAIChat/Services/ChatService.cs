@@ -1,40 +1,40 @@
-﻿using GenAIChat.Interfaces;
+﻿using Azure;
+using GenAIChat.Interfaces;
 using Microsoft.Extensions.AI;
+
 using OpenAI.Responses;
+using System.Globalization;
 
 namespace GenAIChat.Services
 {
 #pragma warning disable OPENAI001
     public class ChatService : IChatService
     {
-        private readonly ResponsesClient chatClient;
+        private readonly IChatClient chatClient;
 
-        private readonly IConfiguration config;
+        private readonly ConversationStore conversationStore;
 
-        public ChatService(ResponsesClient chatClient, IConfiguration config)
+        public ChatService(IChatClient chatClient, ConversationStore conversationStore)
         {
             this.chatClient = chatClient;
-
-            this.config = config;
+            
+            this.conversationStore = conversationStore;
         }
 
-        public async Task<string> GetResponseAsync(string message)
+        public async Task<string> GetResponseAsync(string message, string ConversationId)
         {
-            var deploymentModel = config["AzureOpenAI:Deployment"];
-            var options = new CreateResponseOptions
-            {
-                Model = deploymentModel,
-                InputItems =
-                {
-                    ResponseItem.CreateUserMessageItem(message)
-                }
-            };
+            var history = conversationStore.GetHistoryMessages(ConversationId);
 
-            var response = await chatClient.CreateResponseAsync(options);
+            history.Add(new ChatMessage(ChatRole.User, message));
 
-            //var response = await chatClient.GetResponseAsync(message);
 
-            return response.Value.GetOutputText();
+            var response = await chatClient.GetResponseAsync(history);
+            
+
+            history.Add(new ChatMessage(ChatRole.Assistant, response.Text));
+
+
+            return response.Text;
         }
     }
 }
