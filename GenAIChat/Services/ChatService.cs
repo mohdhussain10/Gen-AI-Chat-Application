@@ -1,9 +1,5 @@
-﻿using Azure;
-using GenAIChat.Interfaces;
+﻿using GenAIChat.Interfaces;
 using Microsoft.Extensions.AI;
-
-using OpenAI.Responses;
-using System.Globalization;
 
 namespace GenAIChat.Services
 {

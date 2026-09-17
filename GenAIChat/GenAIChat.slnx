@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/Solution Items/">
     <File Path="docker-compose.yml" />
+    <Project Path="../GenAIChat.Test/GenAIChat.Test.csproj" Id="55c57f54-6c8e-4167-b5ef-df0368fa7709" />
   </Folder>
   <Project Path="GenAIChat.csproj" />
 </Solution>
